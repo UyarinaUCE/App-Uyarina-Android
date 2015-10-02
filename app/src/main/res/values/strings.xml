@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">"Audire "</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_principal">Principal</string>
+    <string name="title_activity_reconocimiento_voz">ReconocimientoVoz</string>
+    <string name="title_activity_equalizador">Equalizador</string>
+</resources>
