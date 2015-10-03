@@ -56,10 +56,12 @@ public class ReconocimientoVoz extends AppCompatActivity {
             //Si la primera palabra es LLAMAR
             String oracion="";
             if(palabras[0].toLowerCase().equals("salir")){
+                ReconocimientoVoz.this.finish();
 
                 }
-            else if(palabras[0].toLowerCase().equals("equializador")){
-
+            else if(palabras[0].toLowerCase().equals("ecualizador")){
+                Intent intent = new Intent(ReconocimientoVoz.this, Equalizador.class);
+                startActivity(intent);
             }
             else {
             for (int i=0; i<palabras.length;i++){

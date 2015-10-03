@@ -12,9 +12,9 @@ import android.media.audiofx.Equalizer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +37,7 @@ public class Equalizador extends AppCompatActivity implements SeekBar.OnSeekBarC
     TextView bass_boost_label = null;
     SeekBar bass_boost = null;
     CheckBox enabled = null;
-    Button flat = null;
+    ImageButton flat = null;
 
     Equalizer eq = null;
     BassBoost bb = null;
@@ -49,12 +49,17 @@ public class Equalizador extends AppCompatActivity implements SeekBar.OnSeekBarC
     SeekBar sliders[] = new SeekBar[MAX_SLIDERS];
     TextView slider_labels[] = new TextView[MAX_SLIDERS];
     int num_sliders = 0;
+    ImageButton btnempezar,btnns,btneco;
+   View leq;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_equalizador);
-
+        new Thread(new capturarAudio()).start();
+        btnns = (ImageButton) findViewById(R.id.ns);
+        btneco = (ImageButton) findViewById(R.id.eco);
+        leq = (View) findViewById(R.id.leq);
 
     }
     public void equalizador(View v){
@@ -63,7 +68,7 @@ public class Equalizador extends AppCompatActivity implements SeekBar.OnSeekBarC
         enabled = (CheckBox)findViewById(R.id.enabled);
         enabled.setOnCheckedChangeListener (Equalizador.this);
 
-        flat = (Button)findViewById(R.id.flat);
+        flat = (ImageButton)findViewById(R.id.flat);
         flat.setOnClickListener(Equalizador.this);
 
         bass_boost = (SeekBar)findViewById(R.id.bass_boost);
@@ -120,36 +125,52 @@ public class Equalizador extends AppCompatActivity implements SeekBar.OnSeekBarC
         }
 
         updateUI();
+        leq.setVisibility(View.VISIBLE);
+        ImageButton a= (ImageButton) findViewById(R.id.imageButton3);
+        a.setVisibility(View.GONE);
     }
-public void empezar(View v){
-    new Thread(new capturarAudio()).start();
+    public void empezar(View v){
 
-}
+    }
     public void ns(View V){
-                if(ns){
+        if(ns){
             localAudioManager.setParameters("noise_suppression=off");
-                    Toast.makeText(Equalizador.this, "Reducción de ruido activado", Toast.LENGTH_SHORT).show();
-                    ns=!ns;
+            btnns.setImageResource(R.drawable.off);
+            ns=!ns;
         }else{
             localAudioManager.setParameters("noise_suppression=auto");
-                    Toast.makeText(Equalizador.this, "Reducción de ruido desactivado", Toast.LENGTH_SHORT).show();
-                    ns=!ns;
+            btnns.setImageResource(R.drawable.on);
+            ns=!ns;
         }
     }
     public void echo(View V){
-        try {
+        if(!eco){
+            try {
+                aec = AcousticEchoCanceler.create(arec.getAudioSessionId());
+                if(aec!=null){
+                    btnns.setImageResource(R.drawable.on);
+                }else{
+                    Toast.makeText(Equalizador.this, "No es soportado por este dispositivo", Toast.LENGTH_SHORT).show();
+                    btnns.setImageResource(R.drawable.off);
 
-          aec = AcousticEchoCanceler.create(arec.getAudioSessionId());
-if(aec!=null){
-    Toast.makeText(Equalizador.this, "Se cancelo el eco", Toast.LENGTH_SHORT).show();
-}else{
-    Toast.makeText(Equalizador.this, "No es soportado por este dispositivo", Toast.LENGTH_SHORT).show();
+                }
 
-}
+            }catch (Exception e){
 
-    }catch (Exception e){
+            }
+        }else
+        {aec.release();
+
+            btnns.setImageResource(R.drawable.off);
+
 
         }
+    }
+    public void salir(View v){
+        isRecording=false;
+        arec.stop();
+        arec.release();
+Equalizador.this.finish();
     }
     class capturarAudio implements Runnable {
 
@@ -161,15 +182,14 @@ if(aec!=null){
             arec = new AudioRecord(MediaRecorder.AudioSource.MIC, 11025, AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT, buffersize);
             //////NS reducer https://code.google.com/p/android-source-browsing/source/browse/tests/tests/media/src/android/media/cts/AudioPreProcessingTest.java?repo=platform--cts&r=e012e2abe7d829daace218e2a284766eea5e9613
 
-            atrack = new AudioTrack(AudioManager.STREAM_MUSIC, 11025, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT, buffersize, AudioTrack.MODE_STREAM);
+            atrack = new AudioTrack(AudioManager.STREAM_VOICE_CALL, 11025, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT, buffersize, AudioTrack.MODE_STREAM);
             atrack.setPlaybackRate(11025);
             byte[] buffer = new byte[buffersize];
             arec.startRecording();
             atrack.play();
             Context context = getApplicationContext();
             localAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-          //  localAudioManager.setSpeakerphoneOn(true);
-
+            //  localAudioManager.setSpeakerphoneOn(true);
             while(isRecording) {
                 arec.read(buffer, 0, buffersize);
                 atrack.write(buffer, 0, buffer.length);
@@ -178,8 +198,7 @@ if(aec!=null){
     }
     @Override
     public void onProgressChanged (SeekBar seekBar, int level,
-                                   boolean fromTouch)
-    {
+                                   boolean fromTouch) {
         if (seekBar == bass_boost)
         {
             bb.setEnabled (level > 0 ? true : false);

@@ -6,19 +6,43 @@
         layout="@layout/toolbar"
         />
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageButton"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/ico_mic"
-        android:onClick="click_Reconocimiento" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageButton2"
-        android:src="@drawable/ico_mic"
-        android:onClick="click_equalizador" />
+        <ImageButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/traductor"
+            android:src="@drawable/botontraductor"
+            android:onClick="click_Reconocimiento"
+            android:layout_weight="0.3333"
+            android:background="@drawable/botontraductorcolor"
+            android:scaleType="fitCenter" />
+
+        <ImageButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ecualizador"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/botonequalizador"
+            android:onClick="click_equalizador"
+            android:layout_weight="0.3333"
+            android:background="@drawable/botonequalizadorcolor"
+            android:scaleType="fitCenter" />
+
+        <ImageButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ayuda"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/botonayuda"
+            android:layout_weight="0.3333"
+            android:background="@drawable/botonayudacolor"
+            android:scaleType="fitCenter"
+            android:nestedScrollingEnabled="true" />
+    </LinearLayout>
 
 </LinearLayout>

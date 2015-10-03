@@ -5,14 +5,15 @@
 
     <ImageButton
         android:id="@+id/btnMic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:background="@null"
-        android:src="@drawable/ico_mic"
+        android:src="@drawable/grabar"
         android:layout_gravity="center_horizontal"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_margin="20dp" />
+        android:layout_margin="20dp"
+        android:scaleType="fitStart" />
 
     <TextView
         android:layout_width="match_parent"
