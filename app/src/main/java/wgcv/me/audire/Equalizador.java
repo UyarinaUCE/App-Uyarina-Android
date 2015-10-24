@@ -51,7 +51,15 @@ public class Equalizador extends AppCompatActivity implements SeekBar.OnSeekBarC
     int num_sliders = 0;
     ImageButton btnempezar,btnns,btneco;
    View leq;
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        //    finish();
+        isRecording=false;
+        arec.stop();
+        arec.release();
+        Equalizador.this.finish();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,8 +116,7 @@ public class Equalizador extends AppCompatActivity implements SeekBar.OnSeekBarC
                 slider_labels[i].setText (formatBandLabel (freq_range));
             }
         }
-        for (int i = num_sliders ; i < MAX_SLIDERS; i++)
-        {
+        for (int i = num_sliders ; i < MAX_SLIDERS; i++) {
             sliders[i].setVisibility(View.GONE);
             slider_labels[i].setVisibility(View.GONE);
         }
